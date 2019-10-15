@@ -1,12 +1,19 @@
 import React from 'react';
+import T from 'prop-types';
+
 import style from '../styles/style.module.css';
 
-const Counter = props => {
+const Counter = ({ currentArticle, allArticles }) => {
   return (
     <div className={style.counter}>
-      {props.currentArticle}/{props.allArticles}
+      {currentArticle + 1}/{allArticles}
     </div>
   );
+};
+
+Counter.propTypes = {
+  currentArticle: T.number.isRequired,
+  allArticles: T.number.isRequired,
 };
 
 export default Counter;

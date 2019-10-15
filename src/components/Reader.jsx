@@ -4,69 +4,60 @@ import Counter from './Counter';
 import Publication from './Publication';
 
 import publications from '../data/publications.json';
-
 import style from '../styles/style.module.css';
 
 class Reader extends Component {
   state = {
     currentArticle: 0,
-    allArticles: publications.length - 1,
+    allArticles: publications.length,
     articlesList: publications,
     nextDisabled: false,
     prevDisabled: true,
   };
 
-  handleDisabled() {
-    console.log('handle disabled');
-    if (this.state.currentArticle === 0) {
-      this.setState({
-        prevDisabled: true,
-      });
-    } else if (this.setState.currentArticle >= this.state.allArticles) {
+  nextArticle = () => {
+    if (this.state.currentArticle >= this.state.allArticles - 2) {
       this.setState({
         nextDisabled: true,
       });
-    }
-  }
-
-  nextArticle = () => {
-    if (this.state.currentArticle >= this.state.allArticles) {
-      return;
     }
     this.setState(prevState => ({
       currentArticle: prevState.currentArticle + 1,
       prevDisabled: false,
     }));
-    this.handleDisabled();
   };
 
   prevArticle = () => {
-    if (this.state.currentArticle === 0) {
-      return;
+    if (this.state.currentArticle <= 1) {
+      this.setState({
+        prevDisabled: true,
+      });
     }
     this.setState(prevState => ({
       currentArticle: prevState.currentArticle - 1,
+      nextDisabled: false,
     }));
-
-    this.handleDisabled();
   };
 
   render() {
+    const {
+      nextDisabled,
+      prevDisabled,
+      currentArticle,
+      allArticles,
+      articlesList,
+    } = this.state;
+
     return (
       <div className={style.reader}>
         <Controls
           nextArticle={this.nextArticle}
           prevArticle={this.prevArticle}
-          nextDisabled={this.state.nextDisabled}
-          prevDisabled={this.state.prevDisabled}
+          nextDisabled={nextDisabled}
+          prevDisabled={prevDisabled}
         />
-        <Counter
-          currentArticle={this.state.currentArticle}
-          allArticles={this.state.allArticles}
-        />
-        <Publication
-          article={this.state.articlesList[this.state.currentArticle]}
-        />
+        <Counter currentArticle={currentArticle} allArticles={allArticles} />
+        <Publication article={articlesList[currentArticle]} />
       </div>
     );
   }
