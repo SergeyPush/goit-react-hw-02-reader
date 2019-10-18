@@ -1,63 +1,55 @@
 import React, { Component } from 'react';
+import T from 'prop-types';
 import Controls from './Controls';
 import Counter from './Counter';
 import Publication from './Publication';
 
-import publications from '../data/publications.json';
 import style from '../styles/style.module.css';
 
 class Reader extends Component {
+  static propTypes = {
+    items: T.arrayOf(
+      T.shape({
+        id: T.string.isRequired,
+        text: T.string.isRequired,
+        title: T.string.isRequired,
+      }),
+    ).isRequired,
+  };
+
   state = {
     currentArticle: 0,
-    allArticles: publications.length,
-    articlesList: publications,
-    nextDisabled: false,
-    prevDisabled: true,
   };
 
   nextArticle = () => {
-    if (this.state.currentArticle >= this.state.allArticles - 2) {
-      this.setState({
-        nextDisabled: true,
-      });
-    }
     this.setState(prevState => ({
       currentArticle: prevState.currentArticle + 1,
-      prevDisabled: false,
     }));
   };
 
   prevArticle = () => {
-    if (this.state.currentArticle <= 1) {
-      this.setState({
-        prevDisabled: true,
-      });
-    }
     this.setState(prevState => ({
       currentArticle: prevState.currentArticle - 1,
-      nextDisabled: false,
     }));
   };
 
   render() {
-    const {
-      nextDisabled,
-      prevDisabled,
-      currentArticle,
-      allArticles,
-      articlesList,
-    } = this.state;
+    const { currentArticle } = this.state;
+    const { items } = this.props;
 
     return (
       <div className={style.reader}>
         <Controls
           nextArticle={this.nextArticle}
           prevArticle={this.prevArticle}
-          nextDisabled={nextDisabled}
-          prevDisabled={prevDisabled}
+          nextDisabled={currentArticle >= items.length - 1}
+          prevDisabled={currentArticle <= 0}
         />
-        <Counter currentArticle={currentArticle} allArticles={allArticles} />
-        <Publication article={articlesList[currentArticle]} />
+        <Counter
+          currentArticle={currentArticle + 1}
+          allArticles={items.length}
+        />
+        <Publication article={items[currentArticle]} />
       </div>
     );
   }

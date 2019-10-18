@@ -6,7 +6,7 @@ import style from '../styles/style.module.css';
 const Counter = ({ currentArticle, allArticles }) => {
   return (
     <div className={style.counter}>
-      {currentArticle + 1}/{allArticles}
+      {currentArticle}/{allArticles}
     </div>
   );
 };
